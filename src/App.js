@@ -16,25 +16,21 @@ const App = () => {
   const [open, setOpen] = useState(false)
   const [openComplete, setOpenComplete] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [isConnected, setIsConnected] = useState(false)
   const [bcelData, setBcelData] = useState()
   const cancelButtonRef = useRef(null)
 
   useEffect(() => {
     function onConnect() {
       console.log("CONNECTED")
-      setIsConnected(true);
     }
 
     function onDisconnect() {
       console.log("DISCONNECTED")
-      setIsConnected(false);
     }
 
-    function onFooEvent(value) {
+    function onSubscribeBCELEvent(value) {
       setOpen(false)
       console.log(value)
-      console.log("COMPLETED")
       setTimeout(()=>{
         setOpenComplete(true)
       },500)
@@ -42,12 +38,12 @@ const App = () => {
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on(`join::$2b$10$Ek7DpQ3IZW70CGvzKDmvquZllTxwn3Hdxi/GL9lPzDxaNYHeSPdg.`, onFooEvent);
+    socket.on(`join::$2b$10$Ek7DpQ3IZW70CGvzKDmvquZllTxwn3Hdxi/GL9lPzDxaNYHeSPdg.`, onSubscribeBCELEvent);
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
-      socket.off(`join:$2b$10$Ek7DpQ3IZW70CGvzKDmvquZllTxwn3Hdxi/GL9lPzDxaNYHeSPdg.`, onFooEvent);
+      socket.off(`join:$2b$10$Ek7DpQ3IZW70CGvzKDmvquZllTxwn3Hdxi/GL9lPzDxaNYHeSPdg.`, onSubscribeBCELEvent);
     };
   }, []);
 
