@@ -11,12 +11,13 @@ import { io } from 'socket.io-client';
 
 const App = () => {
 
-  const socket = io("https://payment-gateway.lailaolab.com", { transports : ['websocket'] });
+  const socket = io("https://payment-gateway.lailaolab.com", { transports: ['websocket'] });
 
   const [open, setOpen] = useState(false)
   const [openComplete, setOpenComplete] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [bcelData, setBcelData] = useState()
+  const [bcelCallbackData, setBcelCallbackData] = useState()
   const cancelButtonRef = useRef(null)
 
   useEffect(() => {
@@ -31,9 +32,10 @@ const App = () => {
     function onSubscribeBCELEvent(value) {
       setOpen(false)
       console.log(value)
-      setTimeout(()=>{
+      setBcelCallbackData(value)
+      setTimeout(() => {
         setOpenComplete(true)
-      },500)
+      }, 500)
     }
 
     socket.on('connect', onConnect);
@@ -97,7 +99,7 @@ const App = () => {
   const plusMinuceButton =
     "flex h-8 w-8 cursor-pointer items-center justify-center border duration-100 hover:bg-neutral-100 focus:ring-2 focus:ring-gray-500 active:ring-2 active:ring-gray-500";
 
- 
+
 
   const sendForRequestQr = async () => {
     setIsLoading(true)
@@ -273,24 +275,26 @@ const App = () => {
                       <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                         {/* <ExclamationTriangleIcon className="h-6 w-6 text-red-600" aria-hidden="true" /> */}
                       </div>
-                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                      <div className=" ">
                         <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
                           ຊຳລະຄ່າສິນຄ້າ
                         </Dialog.Title>
                         {isLoading ? <div>...ກຳລັງສ້າງ QR ເພື່ອການຊຳລະ...</div> : <div className="mt-2">
                           ສະແກນເພື່ອຊຳລະຄ່າສິນຄ້າ
-                          <QRCode
-                            size={256}
-                            logoImage={'https://play-lh.googleusercontent.com/8UJDl6U4fj1qILYFE3D90OYoNd4rxLa7-OCw5gw-zMZ3QXL8vC1Oqz0r1-KC21e7DY4'}
-                            style={{ height: "auto", maxWidth: "100%", width: "100%" ,borderRadius:100}}
-                            value={bcelData?.code ?? "-"}
-                            viewBox={`0 0 256 256`}
-                          />
+                          <div style={{ display: "flex", justifyItems: "center",width:"100%" }}>
+                            <QRCode
+                              size={256}
+                              logoImage={'https://play-lh.googleusercontent.com/8UJDl6U4fj1qILYFE3D90OYoNd4rxLa7-OCw5gw-zMZ3QXL8vC1Oqz0r1-KC21e7DY4'}
+                              style={{ height: "auto", maxWidth: "100%", width: "100%", borderRadius: 100 }}
+                              value={bcelData?.code ?? "-"}
+                              viewBox={`0 0 256 256`}
+                            />
+                          </div>
                         </div>}
                       </div>
                     </div>
                   </div>
-                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                  {!isLoading ? <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                     <button
                       onClick={() => setOpen(false)}
                       className="flex h-12 w-1/3 items-center justify-center bg-violet-900 text-white duration-100 hover:bg-blue-800" >
@@ -306,7 +310,8 @@ const App = () => {
                     </button>
 
 
-                  </div>
+                  </div> : <div className="mt-2" />}
+
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -316,7 +321,7 @@ const App = () => {
 
       <Transition.Root show={openComplete} as={Fragment}>
         <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpenComplete}>
-        <Transition.Child
+          <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -341,7 +346,12 @@ const App = () => {
               >
                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                   <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    ສຳເລັດການຊຳລະ!!!
+                    <center>
+                      <p style={{fontSize:50,margin:0,color:"#616161"}}>ສຳເລັດການຊຳລະ</p>
+                      <img  width={180}
+                      src="https://png.pngtree.com/png-vector/20230122/ourmid/pngtree-flat-style-payment-success-illustration-on-isolated-background-vector-png-image_47735666.jpg" />
+                      <pre style={{fontSize:10}}>{ JSON.stringify(bcelCallbackData, null, 2) }</pre>
+                    </center>
                   </div>
                   <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                     <button
