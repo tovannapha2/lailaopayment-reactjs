@@ -11,7 +11,7 @@ import { io } from 'socket.io-client';
 
 const App = () => {
 
-  const socket = io("https://payment-gateway.lailaolab.com", { transports: ['websocket'] });
+  const socket = io("https://payment-gateway-dev.lailaolab.com", { transports: ['websocket'] });
 
   const [open, setOpen] = useState(false)
   const [openComplete, setOpenComplete] = useState(false)
@@ -105,13 +105,13 @@ const App = () => {
     setIsLoading(true)
     let data = {
       'amount': '1',
-      'description': 'payment-gateway-test'
+      'description': 'payment-gateway-dev-test'
     };
 
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'https://payment-gateway.lailaolab.com/v1/api/payment/generate-bcel-qr',
+      url: 'https://payment-gateway-dev.lailaolab.com/v1/api/payment/generate-bcel-qr',
       headers: {
         'secretKey': '$2b$10$Ek7DpQ3IZW70CGvzKDmvquZllTxwn3Hdxi/GL9lPzDxaNYHeSPdg.',
         'Content-Type': 'application/x-www-form-urlencoded',
